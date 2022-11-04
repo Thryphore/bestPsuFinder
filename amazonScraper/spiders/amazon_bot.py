@@ -2,19 +2,22 @@ import scrapy
 from ..items import AmazonscraperItem
 
 class AmazonBotSpider(scrapy.Spider):
-    name = 'amazon-bot'
-    #for loop?
+    name = 'amazonBot'
     count=1
-    start_urls = ['https://www.amazon.com/s?k=PSU']
+    start_urls = ['https://www.amazon.com/s?k=Computer+Power+Supply']
 
     def parse(self, response):
         product = AmazonscraperItem()
 
         name = response.css(".a-size-medium.a-text-normal::text").extract()
-        product["name"]=name
+        price=response.css(".sg-col-12-of-20 .a-price-whole::text").extract()
+        product["page"]=name
+        product["price"]= price
+        
+
         yield product
         AmazonBotSpider.count+=1
-        nxt_page='https://www.amazon.com/s?k=PSU&page='+str(AmazonBotSpider.count)
-        if AmazonBotSpider.count<6:
+        nxt_page='https://www.amazon.com/s?k=Computer+Power+Supply'+str(AmazonBotSpider.count)
+        if AmazonBotSpider.count<11:
             yield response.follow(nxt_page,callback=self.parse)
         
