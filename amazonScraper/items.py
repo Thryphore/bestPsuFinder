@@ -7,7 +7,8 @@ import scrapy
 
 
 class AmazonscraperItem(scrapy.Item):
-    # define the fields for your item here like:
     page = scrapy.Field()
+
+class psuItem(scrapy.Item):
+    itemName = scrapy.Field()
     price = scrapy.Field()
-    

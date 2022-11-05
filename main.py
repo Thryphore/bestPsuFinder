@@ -5,9 +5,22 @@ from psus import *
 import time
 start_time = time.time()
 
-#os.system("cd amazonScraper")
-#os.system("scrapy crawl amazonBot -O products.json")
+from amazonScraper.spiders.amazon_bot import AmazonBotSpider
+from scrapy.crawler import CrawlerProcess
 
+process = CrawlerProcess(settings={
+    "FEEDS": {
+        "products.json": {"format": "json"},
+    },
+})
+
+process.crawl(AmazonBotSpider)
+process.start() # the script will block here until the crawling is finished
+
+exit(0)
+
+
+os.system("scrapy crawl amazonBot -O products.json")
 with open('products.json', 'r') as f:
     psus = json.load(f)
 
@@ -20,11 +33,15 @@ print("")
 
 def testItems(dict):
     for item in dict:
-        item = item.lower()
-
-        if any(x in item for x in ["""Bad power supply companies""" "aresgame", "pystar", "armageddon", "gamemax", "gamepower", "nox", "redragon", "jetek"
-        """Filter for non-computer power supplies""", "adapter", "laptop", "raspberry pi", "backup", "camera", "mining", "comeap"]): #This may not be faster in the long term...
+        url = item
+        os.system("scrapy crawl psu -O psu.json")
+        with open('psu.json', 'r') as f:
+            psu = json.load(f)
+        
+        if any(x in item for x in ["""Bad power supply companies ->""" "aresgame", "pystar", "armageddon", "gamemax", "gamepower", "nox", "redragon", "jetek"
+        """Filter for non-computer power supplies ->""", "adapter", "laptop", "raspberry pi", "backup", "camera", "mining", "comeap"]): #This may not be faster in the long term...
             continue
+
         if psuWattage(item) != None:
             if int(psuWattage(item)) >= maxWatts:
                 continue

@@ -7,17 +7,16 @@ class AmazonBotSpider(scrapy.Spider):
     start_urls = ['https://www.amazon.com/s?k=Computer+Power+Supply']
 
     def parse(self, response):
+        print("hi")
         product = AmazonscraperItem()
 
-        name = response.css(".a-size-medium.a-text-normal::text").extract()
-        price=response.css(".sg-col-12-of-20 .a-price-whole::text").extract()
+        name = response.css(".s-line-clamp-2").css("::attr(href)").extract()
         product["page"]=name
-        product["price"]= price
         
 
         yield product
         AmazonBotSpider.count+=1
-        nxt_page='https://www.amazon.com/s?k=Computer+Power+Supply'+str(AmazonBotSpider.count)
+        nxt_page='https://www.amazon.com/s?k=Computer+Power+Supply&page='+str(AmazonBotSpider.count)
         if AmazonBotSpider.count<11:
             yield response.follow(nxt_page,callback=self.parse)
         

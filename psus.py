@@ -27,7 +27,6 @@ def psuWattage(psu): #works great for EVGA
                     continue
                 return wattage
 
-
 def EVGA(psu):
     wattage = int(psuWattage(psu))
     if any(x in psu for x in ["n1", "n2", "w1", "w2", "w3", "bv"]) : return
